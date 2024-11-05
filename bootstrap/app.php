@@ -21,6 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             $response['statusCode'] = 403;
             $response['message'] = 'Unauthorized';
-            return response()->json(['error' => true, 'content' => 'No tienes acceso']);
+            return response()->json(['ok' => false, 'data' => [], 'message' => 'No tienes acceso a la api'], 401);
         });
     })->create();

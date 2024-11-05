@@ -20,11 +20,12 @@ class AuthController extends Controller
                 $credentials['password'],
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'error en el servidor'], 500);
+//            return response()->json(['error' => 'error en el servidor'], 500);
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
 
         if(empty($result)) {
-            return response()->json(['error' => 'credenciales incorrectas'], 401);
+            return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
 
         $userData = $result[0];
@@ -41,7 +42,35 @@ class AuthController extends Controller
             return response()->json(['error' => 'no se pudo crear el token'], 500);
         }
 
-        return $this->respondWithToken($token);
+        return response()->json([
+            'usuario' => $credentials['usuario'],
+            'email' => $user->email,
+            'token' => $this->respondWithToken($token)
+        ], 200);
+//        return $this->respondWithToken($token);
+    }
+
+    public function register(Request $request)
+    {
+        $credentials = $request->only('usuario', 'password');
+
+        try {
+            $result = DB::select('exec SetUsuario ?, ?', [
+                $credentials['usuario'],
+                $credentials['password'],
+            ]);
+        } catch (\Exception $e) {
+//            return response()->json(['error' => 'error en el servidor'], 500);
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+        }
+
+        if(empty($result)) {
+            return response()->json(['error' => 'Error'], 401);
+        }
+
+        if($result[0]->ok == 1) {
+            return response()->json(['ok' => true, 'message' => $result[0]->message], 200);
+        }
     }
 
     public function logout(Request $request)
@@ -73,5 +102,25 @@ class AuthController extends Controller
         $token = 'api-test';
 
         return response()->json(compact('token'));
+    }
+
+    public function existeUsuario(Request $request)
+    {
+        $usuario = $request->get('usuario');
+
+        try {
+            $result = DB::select('exec existeUsuario ?', [
+                $usuario,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+        }
+
+        if(empty($result)) {
+            return response()->json(['ok' => true], 200);
+        }
+        else {
+            return response()->json(['ok' => false, 'warning' => 'El usuario ya existe'], 200);
+        }
     }
 }
