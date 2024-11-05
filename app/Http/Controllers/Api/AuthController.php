@@ -44,6 +44,21 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
+    public function logout(Request $request)
+    {
+        try {
+            // Obtén el token del encabezado de autorización
+            $token = JWTAuth::getToken();
+
+            // Invalida el token para realizar el logout
+            JWTAuth::invalidate($token);
+
+            return response()->json(['message' => 'Logout exitoso']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'No se pudo cerrar la sesión'], 500);
+        }
+    }
+
     protected function respondWithToken($token)
     {
         return response()->json([
