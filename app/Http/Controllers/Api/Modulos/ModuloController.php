@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\Modulos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use function PHPUnit\Framework\isEmpty;
 
 class ModuloController extends Controller {
     public function listModulos(Request $request) {

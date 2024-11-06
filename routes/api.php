@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Modulos\ModuloController;
+use App\Http\Controllers\Api\RolController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -23,7 +24,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('test', [AuthController::class, 'test']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+
     # modulos
     Route::get('/modulos', [ModuloController::class, 'listModulos']);
+
+    # roles
+    Route::post('/roles', [RolController::class, 'create']);
 });
 
