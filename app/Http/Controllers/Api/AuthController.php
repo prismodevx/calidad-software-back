@@ -37,16 +37,26 @@ class AuthController extends Controller
         }
 
         try {
-            $token = JWTAuth::fromUser($user);
+            $customClaims = [
+                'usuario' => $user->usuario,
+                'email' => $user->email,
+            ];
+            $token = JWTAuth::claims($customClaims)->fromUser($user);
         }catch(\Exception $e) {
             return response()->json(['error' => 'no se pudo crear el token'], 500);
         }
 
-        return response()->json([
-            'usuario' => $credentials['usuario'],
-            'email' => $user->email,
-            'token' => $this->respondWithToken($token)
-        ], 200);
+        $payload = JWTAuth::setToken($token)->getPayload();
+
+        $temp = [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'usuario' => $payload->get('usuario'),
+            'email' => $payload->get('email'),
+        ];
+
+        return response()->json($temp, 200);
 //        return $this->respondWithToken($token);
     }
 

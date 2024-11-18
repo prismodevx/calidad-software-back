@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/usuario-exists', [AuthController::class, 'existeUsuario']);
+Route::get('/modulos', [ModuloController::class, 'listModulos']);
 
 Route::get('/check-db-credentials', function () {
     return [
@@ -26,9 +27,12 @@ Route::middleware(['auth:api'])->group(function () {
 
 
     # modulos
-    Route::get('/modulos', [ModuloController::class, 'listModulos']);
+
 
     # roles
+    Route::get('/roles', [RolController::class, 'list']);
     Route::post('/roles', [RolController::class, 'create']);
+    Route::put('/roles/{id}', [RolController::class, 'update']);
+    Route::delete('/roles/{id}', [RolController::class, 'delete']);
 });
 
