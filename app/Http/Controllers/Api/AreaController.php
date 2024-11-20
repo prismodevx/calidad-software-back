@@ -6,16 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class RolController extends Controller {
+class AreaController extends Controller {
 
     public function create(Request $request) {
         try {
-            $data = $request->only('nombre', 'detalle', 'idModuloList');
+            $data = $request->only('nombre', 'descripcion');
 
-            $result = DB::select('exec SetRol ?, ?, ?', [
+            $result = DB::select('exec SetArea ?, ?', [
                 $data['nombre'],
-                $data['detalle'],
-                $data['idModuloList'],
+                $data['descripcion'],
             ]);
 
             if(empty($result)) {
@@ -33,12 +32,12 @@ class RolController extends Controller {
 
     public function update(Request $request, $id) {
         try {
-            $data = $request->only('nombre', 'detalle');
+            $data = $request->only('nombre', 'descripcion');
 
-            $result = DB::select('exec UpdRol ?, ?, ?', [
+            $result = DB::select('exec UpdArea ?, ?, ?', [
                 $id,
                 $data['nombre'],
-                $data['detalle'],
+                $data['descripcion'],
             ]);
 
             if(empty($result)) {
@@ -56,7 +55,8 @@ class RolController extends Controller {
 
     public function delete(Request $request, $id) {
         try {
-            $result = DB::select('exec DelRol ?', [
+
+            $result = DB::select('exec DelArea ?', [
                 $id
             ]);
 
@@ -75,7 +75,7 @@ class RolController extends Controller {
 
     public function list(Request $request) {
         try {
-            $result = DB::select('select * from rol where activo = 1', []);
+            $result = DB::select('exec GetListArea', []);
 
             if(!empty($result)) {
                 return response()->json(['ok' => true, 'data' => $result], 200);
@@ -87,19 +87,19 @@ class RolController extends Controller {
         }
     }
 
-    public function get(Request $request, $id) {
-        try {
-            $result = DB::select('exec GetRol ?', [
-                $id
-            ]);
-
-            if(!empty($result)) {
-                return response()->json(['ok' => true, 'data' => $result], 200);
-            }
-            return response()->json(['ok' => true, 'data' => []], 200);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
-        }
-    }
+//    public function get(Request $request, $id) {
+//        try {
+//            $result = DB::select('exec GetRol ?', [
+//                $id
+//            ]);
+//
+//            if(!empty($result)) {
+//                return response()->json(['ok' => true, 'data' => $result], 200);
+//            }
+//            return response()->json(['ok' => true, 'data' => []], 200);
+//
+//        } catch (\Exception $e) {
+//            return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+//        }
+//    }
 }

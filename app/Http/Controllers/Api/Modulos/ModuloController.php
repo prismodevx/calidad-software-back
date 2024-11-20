@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ModuloController extends Controller {
-    public function listModulos(Request $request) {
+    public function list(Request $request) {
         try {
             $result = DB::select('select * from modulo', []);
 
